@@ -1,0 +1,47 @@
+-- VERSION_5
+-- START DISKCACHE_2
+/home/dit/workspaceInternet/.metadata/.plugins/org.eclipse.core.resources/.projects/segundaPrueba/com.python.pydev.analysis/v2_indexcache
+cliente3|1543962409023643000|/home/dit/workspaceInternet/segundaPrueba/cliente3.py
+cliente2|1543962399863687000|/home/dit/workspaceInternet/segundaPrueba/cliente2.py
+cliente4|1543915531753322000|/home/dit/workspaceInternet/segundaPrueba/cliente4.py
+-- END DISKCACHE
+-- START DICTIONARY
+6
+1=/home/dit/workspaceInternet/segundaPrueba/cliente2.py
+3=/home/dit/workspaceInternet/segundaPrueba/cliente4.py
+6=cliente3
+2=cliente2
+5=/home/dit/workspaceInternet/segundaPrueba/cliente3.py
+4=cliente4
+-- END DICTIONARY
+-- START TREE 1
+25
+add|3|addr!1^68#9*19@addr!3^48#9*35@addr!5^68#9*51@
+cad|3|cadena!1^148#9*19@cadena!3^102#9*35@cadena!5^148#9*51@
+cli|3|clientes!1^56#1*19@clientes!3^37#1*35@clientes!5^56#1*51@
+con|2|content!1^190#25*19@content!5^190#25*51@
+d|3|d!3^46#9*35@d!5^66#9*51@d!1^66#9*19@
+dat|3|data!1^92#9*19@data!5^92#9*51@data!3^68#13*35@
+end|2|end!5^114#21*51@end!1^114#21*19@
+env|0|
+err|2|error!1^99#9*19@error!5^99#9*51@
+f|2|f!5^100#9*51@f!1^100#9*19@
+fic|3|fichero!3^22#5*35@fichero!5^41#5*51@fichero!1^41#5*19@
+fla|6|flagReplica!3^9#1*35@flagRegistro!5^27#1*51@flagRegistro!3^8#1*35@flagReplica!5^28#1*51@flagRegistro!1^27#1*19@flagReplica!1^28#1*19@
+hos|12|host!3^16#5*35@host!5^35#5*51@host!1^35#5*19@hostPortList!1^158#17*19@hostPortList!5^158#17*51@hostList!3^113#17*35@hostPortList!3^112#17*35@hostPortThis!1^57#1*19@hostList!5^159#17*51@hostPortThis!5^57#1*51@hostPortThis!3^38#1*35@hostList!1^159#17*19@
+inp|2|input_data!5^105#17*51@input_data!1^105#17*19@
+lis|3|lista!3^36#1*35@lista!5^55#1*51@lista!1^55#1*19@
+pes|3|pesoFichero!5^46#5*51@pesoFichero!3^27#5*35@pesoFichero!1^46#5*19@
+por|3|portList!5^160#17*51@portList!3^114#17*35@portList!1^160#17*19@
+pue|6|puertoDestino!1^54#1*19@puertoParaTCP!3^34#1*35@puertoParaTCP!1^53#1*19@puertoDestino!5^54#1*51@puertoDestino!3^35#1*35@puertoParaTCP!5^53#1*51@
+rec|1|recibido!3^70#13*35@
+rep|3|reply!1^67#9*19@reply!5^67#9*51@reply!3^47#9*35@
+s|3|s!1^64#9*19@s!3^44#9*35@s!5^64#9*51@
+sen|2|sEnvio!1^164#21*19@sEnvio!5^164#21*51@
+stc|3|sTCPescucha!5^77#9*51@sTCPescucha!1^77#9*19@sTCP!3^53#13*35@
+sva|1|sVariable!3^117#21*35@
+tot|3|totalClientes!3^108#13*35@totalClientes!5^154#13*51@totalClientes!1^154#13*19@
+-- END TREE
+-- START TREE 2
+0
+-- END TREE

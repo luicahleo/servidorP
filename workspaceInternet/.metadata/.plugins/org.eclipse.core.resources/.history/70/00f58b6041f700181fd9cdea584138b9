@@ -1,0 +1,105 @@
+import socket  # for sockets
+import sys  # for exit
+
+# solo registro
+
+flagRegistro = False
+flagReplica = False
+
+if len(sys.argv) == 1:
+    print "tiene que tener al menos 1 parametro"
+    sys.exit();
+
+elif len(sys.argv) == 2:
+    host = sys.argv[1]
+    #print host
+    #print "solo registro"
+    flagRegistro = True
+    
+elif len(sys.argv) == 3:
+    host = sys.argv[1]
+    fichero = sys.argv[2]
+    print fichero
+    print "replica"
+    flagReplica = True
+elif len(sys.argv) > 3:
+    print "Error. Uso: cliente IP [fichero]"
+    sys.exit();
+
+puertoParaTCP = 48000
+puertoDestino = 55000
+lista = "LISTA"
+clientes = ""
+hostPortThis = host+","+str(puertoParaTCP)
+while (1):
+    
+    if flagRegistro:
+        
+        # creamos sockek UDP
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.sendto(str(puertoParaTCP), (host, puertoDestino))
+        d = s.recvfrom(1024)
+        reply = d[0]
+        addr = d[1]
+        
+        if reply == 'ok':
+            flagRegistro = False  
+            
+            #ponemos un socket TCP a la escucha para recibir datos
+            sT = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            #socket de escucha en la direccion *:5000
+            sT.bind(('',puertoParaTCP))
+
+            sT.listen(10)
+            conn, addr = sT.accept()
+        
+    if flagReplica:
+        
+        # creamos sockek UDP
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.sendto(lista, (host, puertoDestino))
+        d = s.recvfrom(1024)
+        reply = d[0]
+        addr = d[1]
+        
+        #procesamos la cadena para tener 
+        #ordenado la lista de clientes conectados
+        
+        cadena = reply.split(";")
+        
+        
+        #preguntamos si nuestro host y puerto estan en la lista
+        if hostPortThis in cadena:
+            cadena.remove(hostPortThis)
+            totalClientes = len(cadena)
+            
+            
+            #aqui abrimos un for para recorrer la lista 
+            #tambien abrimos tcp para cada cliente a la escucha
+            
+            for x in cadena:
+                print x
+                hostPortList = x.split(",")
+                hostList = hostPortList[0]
+                portList = hostPortList[1]
+                
+                try:
+                    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                except socket.error:
+                    print 'Failed to create socket'
+                    sys.exit()
+                    print 'Socket Created'
+                
+                
+     
+        else:
+            print "primero tiene que registrar este cliente"
+        
+        flagReplica = False
+
+
+
+    break
+s.close()   
+sys.exit();
+

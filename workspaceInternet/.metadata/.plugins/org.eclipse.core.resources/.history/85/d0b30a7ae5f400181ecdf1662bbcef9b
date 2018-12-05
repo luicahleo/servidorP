@@ -1,0 +1,29 @@
+import socket   #for sockets
+import sys  #for exit
+
+if len(sys.argv) != 3:
+    print "Usage: python %s <HostName> <PortNumber>" % (sys.argv[0])
+    sys.exit();
+
+host=sys.argv[1]
+port=int(sys.argv[2])
+
+ 
+# create dgram udp socket
+s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+while(1) :
+    msg = raw_input('Enter message to send : ')
+
+    print msg,"al destino",host,port;
+    #Set the whole string
+    s.sendto(msg, (host, port))
+         
+       # receive data from client (data, addr)
+    d = s.recvfrom(1024)
+    reply = d[0]
+    addr = d[1]
+         
+    print 'Server reply : ' + reply
+
+s.close()

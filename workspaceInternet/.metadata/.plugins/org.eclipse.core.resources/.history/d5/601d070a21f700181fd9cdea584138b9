@@ -1,0 +1,73 @@
+import socket  # for sockets
+import sys  # for exit
+
+# solo registro
+
+flagRegistro = False
+flagReplica = False
+
+if len(sys.argv) == 1:
+    print "tiene que tener al menos 1 parametro"
+    sys.exit();
+
+elif len(sys.argv) == 2:
+    host = sys.argv[1]
+    #print host
+    #print "solo registro"
+    flagRegistro = True
+    
+elif len(sys.argv) == 3:
+    host = sys.argv[1]
+    fichero = sys.argv[2]
+    print fichero
+    print "replica"
+    flagReplica = True
+elif len(sys.argv) > 3:
+    print "Error. Uso: cliente IP [fichero]"
+    sys.exit();
+
+portParaTCP = '48000'
+puertoDestino = 55000
+lista = "LISTA"
+clientes = ""
+
+while (1):
+    
+    if flagRegistro:
+        
+        # creamos sockek UDP
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.sendto(portParaTCP, (host, puertoDestino))
+        d = s.recvfrom(1024)
+        reply = d[0]
+        addr = d[1]
+        
+        if reply == 'ok':
+            print reply
+            flagRegistro = False  
+
+    if flagReplica:
+        
+        # creamos sockek UDP
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.sendto(lista, (host, puertoDestino))
+        d = s.recvfrom(1024)
+        reply = d[0]
+        addr = d[1]
+        
+        print reply
+        #procesamos la cadena para tener 
+        #ordenado la lista de clientes conectados
+        
+        cadena = reply.split(";")
+        
+        
+        while flagReplica:
+            continue
+
+
+
+    break
+s.close()   
+sys.exit();
+

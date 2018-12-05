@@ -1,0 +1,231 @@
+import socket  # for sockets
+import sys  # for exit
+import os #para peso de fichero
+
+
+flagRegistro = False
+flagReplica = False
+
+if len(sys.argv) == 1:
+    print "tiene que tener al menos 1 parametro"
+    sys.exit();
+
+elif len(sys.argv) == 2:
+    host = sys.argv[1]
+    print "solo registro"
+    flagRegistro = True
+    
+elif len(sys.argv) == 3:
+    host = sys.argv[1]
+    nombre_fichero = sys.argv[2]
+    
+     
+    try:
+        fichero_enviar = open(nombre_fichero);
+    except IOError:
+        print("Error. Fichero " + nombre_fichero + " inexistente")
+        sys.exit();
+    tam_fichero = os.path.getsize(nombre_fichero);
+    #cadena para enviar 
+    mensajeTCP = nombre_fichero + ' ' + str(tam_fichero);
+    #contenido del fichero 
+    contenido = fichero_enviar.read();
+    
+    flagReplica = True
+    
+elif len(sys.argv) > 3:
+    print "Error. Uso: cliente " + sys.argv[2] + " " + sys.argv[3]
+    sys.exit();
+
+puertoParaTCP = 48000
+puertoDestino = 55000
+lista = "LISTA"
+clientes = ""
+hostPortThis = host+","+str(puertoParaTCP)
+while (1):
+    
+          
+    if flagRegistro:
+    
+        # creamos sockek UDP
+        try:
+            clienteUDP = socket.socket(socket.AF_INET, socket.SOCK_DGRAM);
+        except socket.error:
+            flag_error = -1;
+            print 'Eror al crear el socket UDP';
+            sys.exit();  
+                  
+        if flag_error == 0:
+
+            #enviamos mensaje si no hay erro al crear el socket UDP
+            try:
+                clienteUDP.sendto(puertoParaTCP, (host, puertoDestino));
+            except socket.error:
+                    print "No se pudo enviar el mensaje";
+                    flag_error = 1;        
+            
+        #esperamos la respuesta
+        d = clienteUDP.recvfrom(1024)
+        replyUDP = d[0]
+        addr = d[1]
+    
+        if replyUDP == 'ok':
+            flagRegistro = False  
+            
+            #######################################################################       
+            #############################MODO SERVIDOR##############################
+            #######################################################################       
+            
+            sTCPescucha = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sTCPescucha.setsockopt( socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            try:
+                sTCPescucha.bind((host, puertoParaTCP))
+            except socket.error , msg:
+                print 'Bind failed. Error Code : ' + str(msg[0]) + ' Message ' + msg[1]
+                sys.exit()
+            
+            sTCPescucha.listen(1)
+            print 'Socket now listening'
+            
+            #wait for connection and return a new socket and the remote address
+            conn, addr = sTCPescucha.accept()
+            print 'Connected with ' + addr[0] + ':' + str(addr[1])
+            
+            dataTCPServer = conn.recv(1024)
+    
+            conn.sendall("ok")
+            print "se ha enviado el OK al cliente"
+    
+            
+            #Recepcion()
+            error = "null"
+            ficheroRecibido = open("recibido.txt", "wb")
+    
+            while True:
+                try:
+                    # Recibir datos del cliente.
+                    input_data = conn.recv(1024)
+                except error:
+                    print("Error de lectura.")
+                    break
+            
+        
+                if input_data:
+                    # Compatibilidad con Python 3.
+                    if isinstance(input_data, bytes):
+                        end = input_data[0] == 1
+                        conn.sendall("transfer done")
+        
+                    else:
+                        end = input_data == chr(1)
+                    if not end:
+                        # Almacenar datos.
+                        ficheroRecibido.write(input_data)
+                    else:
+                        break
+        
+            print("El archivo se ha recibido correctamente.")
+            ficheroRecibido.close()
+        
+        conn.close()
+        print 'Disconnected ' + addr[0] + ':' + str(addr[1])
+        sTCPescucha.close()
+                
+            
+     #######################################################################       
+     #############################MODO CLIENTE##############################
+     #######################################################################       
+    if flagReplica:
+        
+        # creamos sockek UDP
+        clienteUDP = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        clienteUDP.sendto(lista, (host, puertoDestino))
+        d = clienteUDP.recvfrom(1024)
+        replyUDPReplica = d[0]
+        addr = d[1]
+        
+        #procesamos la cadena para tener 
+        #ordenado la lista de clientes conectados
+        
+        cadena = replyUDPReplica.split(";")
+        
+        
+        #preguntamos si nuestro host y puerto estan en la lista
+        if hostPortThis in cadena:
+            cadena.remove(hostPortThis)
+            totalClientes = len(cadena)
+            
+            for x in cadena:
+                print x
+                hostPortList = x.split(",")
+                hostList = hostPortList[0]
+                portList = hostPortList[1]
+                
+                #socket TCP para enviar fichero
+                try:
+                    sEnvio = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                except socket.error:
+                    print 'Failed to create socket'
+                    sys.exit()
+                    print 'Socket Created'
+                
+                #Connect to remote server
+                sEnvio.connect((hostList , int(portList)))
+                print 'Socket Connected to ' + str(hostList) + "Port: " + str(portList)
+                try :
+                    #Set the whole string
+                    sEnvio.sendall(fichero + " " + str(pesoFichero))
+                except socket.error:
+                    #Send failed
+                    print 'Send failed'
+                    sys.exit()
+                
+                replyTCPcliente = sEnvio.recv(1024)
+                print "respuesta del cliente: "+replyTCPcliente
+                
+                #verificamos respuesta del MODO SERVIDOR si es "ok"
+                if replyTCPcliente =="ok":
+                    #enviamos el fichero, para eso llamamos a la funcion
+                    #Envio()
+                    while True:
+                        ficheroEnviado = open("./mifichero.txt", "rb")
+                        content = ficheroEnviado.read(1024)
+        
+                        while content:
+                            # Enviar contenido.
+                            sEnvio.send(content)
+                            content = ficheroEnviado.read(1024)
+            
+                        break
+                    
+                        
+                    try:
+                        sEnvio.send(chr(1))
+                        replyTCPcliente = sEnvio.recv(1024)
+
+                        if replyTCPcliente == "transfer done":
+                            print("El archivo ha sido enviado correctamente.")
+                            sEnvio.close()
+                            ficheroEnviado.close()
+                    except TypeError:
+                        # Compatibilidad con Python 3.
+                        sEnvio.send(bytes(chr(1), "utf-8"))
+                    
+                   
+                    
+                
+                
+                
+     
+        else:
+            print "primero tiene que registrar este cliente"
+        
+        while flagReplica:
+            continue
+
+
+
+    break
+clienteUDP.close()   
+sys.exit();
+
